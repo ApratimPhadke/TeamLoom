@@ -1,0 +1,2 @@
+# This file tells Railway to look in the backend folder
+-r backend/requirements.txt
