@@ -1,0 +1,32 @@
+# Render Blueprint for TeamLoom
+# https://render.com/docs/blueprint-spec
+
+databases:
+  - name: teamloom-db
+    databaseName: teamloom
+    user: teamloom
+    plan: free # Change to paid for production
+
+services:
+  - type: web
+    name: teamloom-backend
+    env: python
+    region: oregon
+    plan: free # Change to paid for production
+    buildCommand: cd backend && chmod +x build.sh && ./build.sh
+    startCommand: cd backend && daphne -b 0.0.0.0 -p $PORT teamloom.asgi:application
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: teamloom-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: USE_SQLITE
+        value: "false"
+      - key: PYTHON_VERSION
+        value: "3.11.6"

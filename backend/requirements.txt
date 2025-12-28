@@ -5,6 +5,7 @@ django-cors-headers>=4.3.0
 
 # Database
 psycopg2-binary>=2.9.9
+dj-database-url>=2.1.0
 
 # Authentication
 djangorestframework-simplejwt>=5.3.0
@@ -23,6 +24,10 @@ redis>=5.0.0
 python-decouple>=3.8
 Pillow>=10.0.0
 django-filter>=23.5
+
+# Production
+gunicorn>=21.0.0
+whitenoise>=6.6.0
 
 # Development
 django-debug-toolbar>=4.2.0
