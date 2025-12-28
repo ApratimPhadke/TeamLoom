@@ -1,0 +1,1 @@
+# Seed skills management command
