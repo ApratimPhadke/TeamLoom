@@ -88,13 +88,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def handle_message(self, data):
         """Handle new chat message."""
         content = data.get('content', '').strip()
+        message_type = data.get('message_type', 'text')
+        file_url = data.get('file_url')
+        file_name = data.get('file_name')
+        
+        # For file messages, content is optional (use filename as content if not provided)
+        if message_type in ['image', 'file'] and not content:
+            content = f"Sent a file: {file_name}" if file_name else "Sent a file"
+        
         if not content:
             return
         
         reply_to_id = data.get('reply_to')
         
         # Save message to database
-        message = await self.save_message(content, reply_to_id)
+        message = await self.save_message(content, reply_to_id, message_type, file_url)
         
         # Broadcast to room group
         await self.channel_layer.group_send(
@@ -109,6 +117,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         'avatar': self.user.avatar_url,
                     },
                     'content': content,
+                    'message_type': message_type,
+                    'file_url': file_url,
+                    'file_name': file_name,
                     'reply_to': reply_to_id,
                     'created_at': message.created_at.isoformat(),
                 }
@@ -185,7 +196,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         ).exists()
     
     @database_sync_to_async
-    def save_message(self, content, reply_to_id=None):
+    def save_message(self, content, reply_to_id=None, message_type='text', file_url=None):
         """Save message to database."""
         from .models import Message
         
@@ -194,7 +205,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             sender=self.user,
             content=content,
             reply_to_id=reply_to_id,
-            message_type='text'
+            message_type=message_type,
+            file_url=file_url
         )
         return message
     

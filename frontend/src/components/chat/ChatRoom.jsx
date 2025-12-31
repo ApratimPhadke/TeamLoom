@@ -296,6 +296,35 @@ export default function ChatRoom({ groupId, groupName, onBack }) {
                                             : 'bg-dark-700 text-dark-100 rounded-bl-md'
                                             }`}
                                     >
+                                        {/* Handle image messages */}
+                                        {msg.message_type === 'image' && msg.file_url && (
+                                            <a
+                                                href={msg.file_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="block"
+                                            >
+                                                <img
+                                                    src={msg.file_url}
+                                                    alt={msg.file_name || 'Image'}
+                                                    className="max-w-xs rounded-lg mb-2 hover:opacity-90 transition"
+                                                />
+                                            </a>
+                                        )}
+                                        {/* Handle file messages */}
+                                        {msg.message_type === 'file' && msg.file_url && (
+                                            <a
+                                                href={msg.file_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={`flex items-center gap-2 mb-2 px-3 py-2 rounded-lg ${isOwn ? 'bg-white/20' : 'bg-dark-600'
+                                                    }`}
+                                            >
+                                                <File size={20} />
+                                                <span className="text-sm truncate">{msg.file_name || 'File'}</span>
+                                            </a>
+                                        )}
+                                        {/* Text content */}
                                         <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
                                     </div>
                                     <p className={`text-[10px] text-dark-500 mt-1 ${isOwn ? 'text-right' : ''}`}>

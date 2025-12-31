@@ -4,6 +4,7 @@ URL patterns for authentication endpoints.
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from . import views
+from . import google_auth
 
 app_name = 'accounts'
 
@@ -26,4 +27,7 @@ urlpatterns = [
     
     # Avatar upload
     path('upload-avatar/', views.upload_avatar, name='upload_avatar'),
+    
+    # Google OAuth
+    path('google/', google_auth.google_auth, name='google_auth'),
 ]

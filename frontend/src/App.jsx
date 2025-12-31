@@ -6,6 +6,8 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Onboarding from './pages/Onboarding'
 import Explore from './pages/Explore'
+import ExploreNew from './pages/ExploreNew'
+import Discover from './pages/Discover'
 import Profile from './pages/Profile'
 import MyProfile from './pages/MyProfile'
 import GroupDetail from './pages/GroupDetail'
@@ -80,12 +82,18 @@ function App() {
                 }
             >
                 <Route path="/explore" element={<Explore />} />
+                <Route path="/app/explore" element={<ExploreNew />} />
+                <Route path="/app/discover" element={<Discover />} />
                 <Route path="/profile" element={<MyProfile />} />
                 <Route path="/profile/:id" element={<Profile />} />
                 <Route path="/groups/create" element={<CreateGroup />} />
+                <Route path="/app/groups/create" element={<CreateGroup />} />
                 <Route path="/groups/my" element={<MyGroups />} />
+                <Route path="/app/my-groups" element={<MyGroups />} />
                 <Route path="/groups/:id" element={<GroupDetail />} />
+                <Route path="/app/groups/:id" element={<GroupDetail />} />
                 <Route path="/notifications" element={<Notifications />} />
+                <Route path="/app/notifications" element={<Notifications />} />
                 <Route path="/chat" element={<Chat />} />
             </Route>
 

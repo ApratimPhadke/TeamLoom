@@ -69,6 +69,7 @@ class MessageListSerializer(serializers.ModelSerializer):
         model = Message
         fields = [
             'id', 'sender_id', 'sender_name', 'sender_avatar',
-            'content', 'message_type', 'is_edited', 'is_deleted', 'created_at'
+            'content', 'message_type', 'file_url', 'file_name', 
+            'is_edited', 'is_deleted', 'created_at'
         ]
 

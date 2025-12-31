@@ -227,3 +227,6 @@ CELERY_TIMEZONE = TIME_ZONE
 # Email Configuration (for dev, use console backend)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'TeamLoom <noreply@teamloom.edu>'
+
+# Google OAuth
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')

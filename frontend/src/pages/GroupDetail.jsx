@@ -8,6 +8,7 @@ import {
 import toast from 'react-hot-toast'
 import { fetchGroupById, joinGroup, leaveGroup } from '../store/groupsSlice'
 import api from '../api/client'
+import ChatRoom from '../components/chat/ChatRoom'
 
 export default function GroupDetail() {
     const { id } = useParams()
@@ -511,6 +512,19 @@ export default function GroupDetail() {
                                 Submit Request
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Chat Modal */}
+            {showChat && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-950/80">
+                    <div className="w-full max-w-4xl animate-scale-in">
+                        <ChatRoom
+                            groupId={id}
+                            groupName={group.name}
+                            onBack={() => setShowChat(false)}
+                        />
                     </div>
                 </div>
             )}
