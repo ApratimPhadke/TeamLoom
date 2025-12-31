@@ -1,25 +1,19 @@
 # Render Blueprint for TeamLoom
 # https://render.com/docs/blueprint-spec
-
-databases:
-  - name: teamloom-db
-    databaseName: teamloom
-    user: teamloom
-    plan: free # Change to paid for production
+# Note: Using external Supabase PostgreSQL database
 
 services:
   - type: web
     name: teamloom-backend
     env: python
-    region: oregon
+    region: singapore # Match Supabase region (ap-southeast-1)
     plan: free # Change to paid for production
     buildCommand: cd backend && chmod +x build.sh && ./build.sh
     startCommand: cd backend && daphne -b 0.0.0.0 -p $PORT teamloom.asgi:application
+    healthCheckPath: /api/health/
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: teamloom-db
-          property: connectionString
+        sync: false # Set manually to Supabase connection string
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG
@@ -30,3 +24,5 @@ services:
         value: "false"
       - key: PYTHON_VERSION
         value: "3.11.6"
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false # Set manually to frontend URLs
