@@ -1,28 +1,83 @@
-# Render Blueprint for TeamLoom
+# Render Blueprint for TeamLoom Backend
 # https://render.com/docs/blueprint-spec
-# Note: Using external Supabase PostgreSQL database
+
+databases:
+  - name: teamloom-db
+    databaseName: teamloom
+    user: teamloom
+    plan: free # Free tier: 90 days, then $7/month
+    region: singapore
+
+# OPTIONAL: Redis service (NOT FREE - $7/month minimum)
+# Uncomment if you want Redis for WebSockets/Celery
+# If you skip this, the app will use in-memory channels (works fine for single instance)
+# Alternative: Use external free Redis from Upstash or Redis Cloud
+# redis:
+#   - name: teamloom-redis
+#     plan: starter # $7/month minimum
+#     region: singapore
+#     maxmemoryPolicy: allkeys-lru
+#     ipAllowList: []
 
 services:
   - type: web
     name: teamloom-backend
-    env: python
-    region: singapore # Match Supabase region (ap-southeast-1)
-    plan: free # Change to paid for production
+    runtime: python
+    region: singapore
+    plan: free
     buildCommand: cd backend && chmod +x build.sh && ./build.sh
     startCommand: cd backend && daphne -b 0.0.0.0 -p $PORT teamloom.asgi:application
     healthCheckPath: /api/health/
+
     envVars:
+      # Database (auto-populated if using Render PostgreSQL above)
       - key: DATABASE_URL
-        sync: false # Set manually to Supabase connection string
+        fromDatabase:
+          name: teamloom-db
+          property: connectionString
+
+      # Django Core
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
-        value: ".onrender.com"
-      - key: USE_SQLITE
-        value: "false"
+        value: ".onrender.com,localhost,127.0.0.1"
       - key: PYTHON_VERSION
         value: "3.11.6"
+
+      # CORS - UPDATE THIS with your frontend URL after deploying frontend
       - key: CORS_ALLOWED_ORIGINS
-        sync: false # Set manually to frontend URLs
+        value: "http://localhost:5173,https://your-frontend.vercel.app"
+
+      # Redis (optional - only if using Redis service above or external Redis)
+      # Uncomment and configure if using Redis
+      # - key: USE_REDIS
+      #   value: "true"
+      # - key: REDIS_HOST
+      #   fromService:
+      #     name: teamloom-redis
+      #     type: redis
+      #     property: host
+
+      # Or use external Redis URL (e.g., Upstash)
+      # - key: REDIS_URL
+      #   sync: false # Set manually
+
+      # Google OAuth - SET MANUALLY in Render Dashboard
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+
+      # Optional: Email configuration
+      # - key: EMAIL_BACKEND
+      #   value: "django.core.mail.backends.smtp.EmailBackend"
+      # - key: EMAIL_HOST
+      #   sync: false
+      # - key: EMAIL_PORT
+      #   value: "587"
+      # - key: EMAIL_USE_TLS
+      #   value: "True"
+      # - key: EMAIL_HOST_USER
+      #   sync: false
+      # - key: EMAIL_HOST_PASSWORD
+      #   sync: false
