@@ -26,7 +26,7 @@ services:
     region: singapore
     plan: free
     buildCommand: cd backend && chmod +x build.sh && ./build.sh
-    startCommand: cd backend && daphne -b 0.0.0.0 -p $PORT teamloom.asgi:application
+    startCommand: cd backend && python -m daphne -b 0.0.0.0 -p $PORT teamloom.asgi:application
     healthCheckPath: /api/health/
 
     envVars:
